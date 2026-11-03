@@ -250,7 +250,7 @@
         <div>&gt; site data is stored in your browser's localStorage</div>
         <div>&gt; notes widget <em>does</em> support basic markdown</div>
         <div>&gt; video dominates image for background media; everything else in settings</div>
-        <div>&gt; <a href="https://github.com/nielandvoid/prothesmia" target="_blank" rel="noopener noreferrer">https://github.com/nielandvoid/prothesmia</a> // PRs welcome</div>
+        <div>&gt; <a href="https://github.com/nielandvoid/klepsydra" target="_blank" rel="noopener noreferrer">https://github.com/nielandvoid/klepsydra</a> // PRs welcome</div>
         <button class="onload-close" type="button">[ close ]</button>
       </div>
     `;
