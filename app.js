@@ -118,7 +118,7 @@
   function toggleRunning() {
     running = !running;
     if (running) {
-      window.prothesmiaAudioCues?.primeAudioContext();
+      window.klepsydraAudioCues?.primeAudioContext();
       endTime = Date.now() + secondsLeft * 1000;
       rafId = requestAnimationFrame(tick);
     } else if (rafId) {
@@ -151,7 +151,7 @@
       secondsLeft = nextInt;
       updateDigits(secondsLeft);
       if (loadAudioSettings().tickSound && secondsLeft > 0) {
-        window.prothesmiaAudioCues?.playTickSound();
+        window.klepsydraAudioCues?.playTickSound();
       }
     }
 
@@ -165,7 +165,7 @@
 
   function handleSessionComplete() {
     if (loadAudioSettings().sessionEndSound) {
-      window.prothesmiaAudioCues?.playSessionEndChime();
+      window.klepsydraAudioCues?.playSessionEndChime();
     }
     if (modeId === "focus") {
       focusCount += 1;
@@ -240,12 +240,12 @@
   buildTabs();
   renderStatic();
 
-  if (!localStorage.getItem("prothesmia:visited")) {
+  if (!localStorage.getItem("klepsydra:visited")) {
     const overlay = document.createElement("div");
     overlay.className = "onload-overlay";
     overlay.innerHTML = `
       <div class="onload-modal">
-        <div style="color: var(--fg);">// prothesmia</div>
+        <div style="color: var(--fg);">// klepsydra</div>
         <br>
         <div>&gt; site data is stored in your browser's localStorage</div>
         <div>&gt; notes widget <em>does</em> support basic markdown</div>
@@ -257,7 +257,7 @@
     document.body.appendChild(overlay);
 
     overlay.querySelector(".onload-close").addEventListener("click", () => {
-      localStorage.setItem("prothesmia:visited", "true");
+      localStorage.setItem("klepsydra:visited", "true");
       overlay.remove();
     });
   }
@@ -265,7 +265,7 @@
   startBtn.addEventListener("click", toggleRunning);
   resetBtn.addEventListener("click", reset);
 
-  window.addEventListener("prothesmia:config-change", (e) => {
+  window.addEventListener("klepsydra:config-change", (e) => {
     const prevMinutesById = { focus: minutesFor("focus"), short: minutesFor("short"), long: minutesFor("long") };
     config = e.detail;
     MODES = buildModes(config);
@@ -282,8 +282,8 @@
     renderStatic();
   });
 
-  window.addEventListener("prothesmia:theme-change", () => renderStatic());
-  window.addEventListener("prothesmia:button-profile-change", () => renderStatic());
+  window.addEventListener("klepsydra:theme-change", () => renderStatic());
+  window.addEventListener("klepsydra:button-profile-change", () => renderStatic());
 
   let timerClicks = 0;
   let lastTimerClick = 0;
@@ -329,11 +329,11 @@
     if (!widget) return;
 
     widget.hidden = !config.showNotes;
-    window.addEventListener("prothesmia:notes-toggle", (e) => {
+    window.addEventListener("klepsydra:notes-toggle", (e) => {
       widget.hidden = !e.detail;
     });
 
-    const savedPos = localStorage.getItem("prothesmia:notes-pos");
+    const savedPos = localStorage.getItem("klepsydra:notes-pos");
     if (savedPos) {
       try {
         const { x, y, w, h } = JSON.parse(savedPos);
@@ -375,7 +375,7 @@
     new ResizeObserver(() => savePos()).observe(widget);
 
     function savePos() {
-      localStorage.setItem("prothesmia:notes-pos", JSON.stringify({
+      localStorage.setItem("klepsydra:notes-pos", JSON.stringify({
         x: widget.style.left,
         y: widget.style.top,
         w: widget.style.width,
@@ -383,13 +383,13 @@
       }));
     }
 
-    const savedNotes = localStorage.getItem("prothesmia:notes-data");
+    const savedNotes = localStorage.getItem("klepsydra:notes-data");
     if (savedNotes) {
       content.innerHTML = savedNotes;
     }
 
     function saveNotes() {
-      localStorage.setItem("prothesmia:notes-data", content.innerHTML);
+      localStorage.setItem("klepsydra:notes-data", content.innerHTML);
     }
 
     content.addEventListener("change", (e) => {

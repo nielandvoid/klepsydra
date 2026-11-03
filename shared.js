@@ -1,4 +1,4 @@
-const CONFIG_KEY = "prothesmia:config";
+const CONFIG_KEY = "klepsydra:config";
 
 const DEFAULT_CONFIG = {
   focusMinutes: 25,
@@ -24,10 +24,10 @@ function loadConfig() {
 
 function saveConfig(config) {
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-  window.dispatchEvent(new CustomEvent("prothesmia:config-change", { detail: config }));
+  window.dispatchEvent(new CustomEvent("klepsydra:config-change", { detail: config }));
 }
 
-const THEME_KEY = "prothesmia:theme";
+const THEME_KEY = "klepsydra:theme";
 
 const TOKEN_CSS_VAR = {
   bg: "--bg",
@@ -94,7 +94,7 @@ function applyTheme(tokens, preset) {
 function saveTheme(theme) {
   localStorage.setItem(THEME_KEY, JSON.stringify(theme));
   applyTheme(theme.tokens, theme.preset);
-  window.dispatchEvent(new CustomEvent("prothesmia:theme-change", { detail: theme }));
+  window.dispatchEvent(new CustomEvent("klepsydra:theme-change", { detail: theme }));
 }
 
 function saveRimColor(field, hex) {
@@ -107,7 +107,7 @@ function saveRimColor(field, hex) {
   applyTheme(initialTheme.tokens, initialTheme.preset);
 }
 
-const BUTTON_PROFILE_KEY = "prothesmia:buttonProfile";
+const BUTTON_PROFILE_KEY = "klepsydra:buttonProfile";
 const BUTTON_PROFILES = ["translucent", "opaque", "retro"];
 
 function loadButtonProfile() {
@@ -127,13 +127,13 @@ function applyButtonProfile(profile) {
 function saveButtonProfile(profile) {
   localStorage.setItem(BUTTON_PROFILE_KEY, profile);
   applyButtonProfile(profile);
-  window.dispatchEvent(new CustomEvent("prothesmia:button-profile-change", { detail: profile }));
+  window.dispatchEvent(new CustomEvent("klepsydra:button-profile-change", { detail: profile }));
 }
 
 applyButtonProfile(loadButtonProfile());
 
-const BG_KEY = "prothesmia:background";
-const BG_IMAGE_KEY = "prothesmia:bgImage";
+const BG_KEY = "klepsydra:background";
+const BG_IMAGE_KEY = "klepsydra:bgImage";
 
 const DEFAULT_BG = {
   imageOpacity: 60,
@@ -152,7 +152,7 @@ function loadBgSettings() {
 
 function saveBgSettings(settings) {
   localStorage.setItem(BG_KEY, JSON.stringify(settings));
-  window.dispatchEvent(new CustomEvent("prothesmia:bg-change", { detail: settings }));
+  window.dispatchEvent(new CustomEvent("klepsydra:bg-change", { detail: settings }));
 }
 
 function loadBgImage() {
@@ -175,7 +175,7 @@ function saveBgImage(dataUrl) {
 
 function getMediaState(mediaId) {
   try {
-    const db = JSON.parse(localStorage.getItem("prothesmia:mediaState") || "{}");
+    const db = JSON.parse(localStorage.getItem("klepsydra:mediaState") || "{}");
     return db[mediaId] || null;
   } catch { return null; }
 }
@@ -183,9 +183,9 @@ function getMediaState(mediaId) {
 function saveMediaState(mediaId, state) {
   if (!mediaId) return;
   try {
-    const db = JSON.parse(localStorage.getItem("prothesmia:mediaState") || "{}");
+    const db = JSON.parse(localStorage.getItem("klepsydra:mediaState") || "{}");
     db[mediaId] = state;
-    localStorage.setItem("prothesmia:mediaState", JSON.stringify(db));
+    localStorage.setItem("klepsydra:mediaState", JSON.stringify(db));
   } catch {}
 }
 
@@ -222,8 +222,8 @@ function parseYouTubeUrl(url) {
   return { videoId, listId };
 }
 
-const AUDIO_KEY = "prothesmia:audioSettings";
-const CUSTOM_AUDIO_KEY = "prothesmia:customAudio";
+const AUDIO_KEY = "klepsydra:audioSettings";
+const CUSTOM_AUDIO_KEY = "klepsydra:customAudio";
 
 const DEFAULT_AUDIO = {
   sessionEndSound: true,
@@ -250,7 +250,7 @@ function loadAudioSettings() {
 
 function saveAudioSettings(settings) {
   localStorage.setItem(AUDIO_KEY, JSON.stringify(settings));
-  window.dispatchEvent(new CustomEvent("prothesmia:audio-change", { detail: settings }));
+  window.dispatchEvent(new CustomEvent("klepsydra:audio-change", { detail: settings }));
 }
 
 function loadCustomAudio() {
@@ -310,7 +310,7 @@ function playTickSound() {
   playTone(1000, 0.045, { type: "square", gain: 0.05 });
 }
 
-window.prothesmiaAudioCues = { playSessionEndChime, playTickSound, primeAudioContext: getAudioCtx };
+window.klepsydraAudioCues = { playSessionEndChime, playTickSound, primeAudioContext: getAudioCtx };
 
 function mountCustomAudio() {
   const audioEl = new Audio();
@@ -332,13 +332,13 @@ function mountCustomAudio() {
   }
 
   audioEl.addEventListener("loadedmetadata", () => {
-    window.dispatchEvent(new CustomEvent("prothesmia:audio-change", { detail: loadAudioSettings() }));
+    window.dispatchEvent(new CustomEvent("klepsydra:audio-change", { detail: loadAudioSettings() }));
   });
 
   applySettings();
-  window.addEventListener("prothesmia:audio-change", applySettings);
+  window.addEventListener("klepsydra:audio-change", applySettings);
 
-  window.prothesmiaCustomAudio = {
+  window.klepsydraCustomAudio = {
     getDuration: () => audioEl.duration || 0,
   };
 }
@@ -606,7 +606,7 @@ function mountYouTubeMusic() {
   }
 
   render();
-  window.addEventListener("prothesmia:audio-change", render);
+  window.addEventListener("klepsydra:audio-change", render);
 }
 
 let ytApiPromise = null;
@@ -689,7 +689,7 @@ function mountBackgroundLayer() {
     if (ytPlayer) ytPlayer.setVolume(v);
   }
 
-  window.prothesmiaVideoAudio = {
+  window.klepsydraVideoAudio = {
     setMuted,
     setVolume,
     isMuted: () => muted,
@@ -825,11 +825,11 @@ function mountBackgroundLayer() {
   });
 
   render();
-  window.addEventListener("prothesmia:bg-change", render);
-  window.addEventListener("prothesmia:button-profile-change", render);
+  window.addEventListener("klepsydra:bg-change", render);
+  window.addEventListener("klepsydra:button-profile-change", render);
 }
 
-const LAYOUT_KEY = "prothesmia:layout";
+const LAYOUT_KEY = "klepsydra:layout";
 
 function loadLayout() {
   try {
@@ -933,14 +933,14 @@ function mountLayoutEditor(slots) {
   });
   document.getElementById("layout-done")?.addEventListener("click", () => setEditMode(false));
 
-  window.prothesmiaLayoutEditor = { enter: () => setEditMode(true), exit: () => setEditMode(false) };
+  window.klepsydraLayoutEditor = { enter: () => setEditMode(true), exit: () => setEditMode(false) };
 }
 
 function mountHeader() {
   const root = document.getElementById("header");
   if (!root) return;
   root.innerHTML = `
-    <div class="wordmark"><span class="wordmark-dot"></span><span class="wordmark-text">προθεσμία</span></div>
+    <div class="wordmark"><span class="wordmark-dot"></span><span class="wordmark-text">κλεψύδρα</span></div>
     <div class="header-icons">
       <a class="icon-btn" href="https://github.com/nielandvoid/prothesmia" target="_blank" rel="noopener noreferrer" data-tip="github">
         <svg width="22" height="22" viewBox="0 0 128 128" fill="currentColor"><path d="M56.7937 84.9688C44.4187 83.4688 35.7 74.5625 35.7 63.0313C35.7 58.3438 37.3875 53.2813 40.2 49.9063C38.9812 46.8125 39.1687 40.25 40.575 37.5313C44.325 37.0625 49.3875 39.0313 52.3875 41.75C55.95 40.625 59.7 40.0625 64.2937 40.0625C68.8875 40.0625 72.6375 40.625 76.0125 41.6563C78.9187 39.0313 84.075 37.0625 87.825 37.5313C89.1375 40.0625 89.325 46.625 88.1062 49.8125C91.1062 53.375 92.7 58.1563 92.7 63.0313C92.7 74.5625 83.9812 83.2813 71.4187 84.875C74.6062 86.9375 76.7625 91.4375 76.7625 96.5938L76.7625 106.344C76.7625 109.156 79.1062 110.75 81.9187 109.625C98.8875 103.156 112.2 86.1875 112.2 65.1875C112.2 38.6563 90.6375 17 64.1062 17C37.575 17 16.2 38.6562 16.2 65.1875C16.2 86 29.4187 103.25 47.2312 109.719C49.7625 110.656 52.2 108.969 52.2 106.438L52.2 98.9375C50.8875 99.5 49.2 99.875 47.7 99.875C41.5125 99.875 37.8562 96.5 35.2312 90.2188C34.2 87.6875 33.075 86.1875 30.9187 85.9063C29.7937 85.8125 29.4187 85.3438 29.4187 84.7813C29.4187 83.6563 31.2937 82.8125 33.1687 82.8125C35.8875 82.8125 38.2312 84.5 40.6687 87.9688C42.5437 90.6875 44.5125 91.9063 46.8562 91.9063C49.2 91.9063 50.7 91.0625 52.8562 88.9063C54.45 87.3125 55.6687 85.9063 56.7937 84.9688Z"/></svg>
@@ -956,7 +956,7 @@ function mountHeader() {
     </div>
   `;
   document.getElementById("settings-toggle").addEventListener("click", () => {
-    window.prothesmiaSettings?.toggle();
+    window.klepsydraSettings?.toggle();
   });
 
   const ICON_FULLSCREEN_ENTER =
@@ -1339,7 +1339,7 @@ function mountSettingsPanel() {
     const reader = new FileReader();
     reader.onload = () => {
       const ok = saveBgImage(String(reader.result));
-      window.dispatchEvent(new CustomEvent("prothesmia:bg-change", { detail: loadBgSettings() }));
+      window.dispatchEvent(new CustomEvent("klepsydra:bg-change", { detail: loadBgSettings() }));
       renderAppearanceTab();
       if (!ok) {
         alert("that image is too large to save permanently, but it'll stay applied for this session");
@@ -1351,7 +1351,7 @@ function mountSettingsPanel() {
   document.getElementById("bg-image-clear").addEventListener("click", () => {
     saveBgImage("");
     bgImageInput.value = "";
-    window.dispatchEvent(new CustomEvent("prothesmia:bg-change", { detail: loadBgSettings() }));
+    window.dispatchEvent(new CustomEvent("klepsydra:bg-change", { detail: loadBgSettings() }));
     renderAppearanceTab();
   });
 
@@ -1414,7 +1414,7 @@ function mountSettingsPanel() {
 
   document.getElementById("customize-layout-btn").addEventListener("click", () => {
     close();
-    window.prothesmiaLayoutEditor?.enter();
+    window.klepsydraLayoutEditor?.enter();
   });
 
   const notesToggle = document.getElementById("notes-widget-toggle");
@@ -1423,7 +1423,7 @@ function mountSettingsPanel() {
     config.showNotes = !config.showNotes;
     saveConfig(config);
     notesToggle.classList.toggle("is-on", config.showNotes);
-    window.dispatchEvent(new CustomEvent("prothesmia:notes-toggle", { detail: config.showNotes }));
+    window.dispatchEvent(new CustomEvent("klepsydra:notes-toggle", { detail: config.showNotes }));
   });
 
   renderAppearanceTab();
@@ -1454,7 +1454,7 @@ function mountSettingsPanel() {
     customVolInput.value = audio.customVol;
     document.getElementById("custom-vol-val").textContent = `${audio.customVol}%`;
     document.getElementById("custom-track-name").textContent = audio.customName || "no track imported";
-    const dur = window.prothesmiaCustomAudio?.getDuration() || 0;
+    const dur = window.klepsydraCustomAudio?.getDuration() || 0;
     const durLabel = dur ? formatDuration(dur) : "";
     document.getElementById("custom-track-meta").textContent = customSrc
       ? [audio.customOn ? "looping" : "paused", durLabel].filter(Boolean).join(" · ")
@@ -1485,7 +1485,7 @@ function mountSettingsPanel() {
     const audio = { ...loadAudioSettings() };
     audio.sessionEndSound = !audio.sessionEndSound;
     saveAudioSettings(audio);
-    if (audio.sessionEndSound) window.prothesmiaAudioCues?.playSessionEndChime();
+    if (audio.sessionEndSound) window.klepsydraAudioCues?.playSessionEndChime();
     renderAudioTab();
   });
 
@@ -1493,7 +1493,7 @@ function mountSettingsPanel() {
     const audio = { ...loadAudioSettings() };
     audio.tickSound = !audio.tickSound;
     saveAudioSettings(audio);
-    if (audio.tickSound) window.prothesmiaAudioCues?.playTickSound();
+    if (audio.tickSound) window.klepsydraAudioCues?.playTickSound();
     renderAudioTab();
   });
 
@@ -1501,14 +1501,14 @@ function mountSettingsPanel() {
     const audio = { ...loadAudioSettings() };
     audio.videoSoundOn = !audio.videoSoundOn;
     saveAudioSettings(audio);
-    window.prothesmiaVideoAudio?.setMuted(!audio.videoSoundOn);
+    window.klepsydraVideoAudio?.setMuted(!audio.videoSoundOn);
     renderAudioTab();
   });
 
   document.getElementById("video-vol").addEventListener("input", (e) => {
     const audio = { ...loadAudioSettings(), videoVol: Number(e.target.value) };
     saveAudioSettings(audio);
-    window.prothesmiaVideoAudio?.setVolume(audio.videoVol);
+    window.klepsydraVideoAudio?.setVolume(audio.videoVol);
     renderAudioTab();
   });
 
@@ -1578,8 +1578,8 @@ function mountSettingsPanel() {
     renderAudioTab();
   });
 
-  window.addEventListener("prothesmia:audio-change", renderAudioTab);
-  window.addEventListener("prothesmia:bg-change", renderAudioTab);
+  window.addEventListener("klepsydra:audio-change", renderAudioTab);
+  window.addEventListener("klepsydra:bg-change", renderAudioTab);
   renderAudioTab();
 
   const STEPS = {
@@ -1664,5 +1664,5 @@ function mountSettingsPanel() {
 
   renderTimerTab();
 
-  window.prothesmiaSettings = { open, close, toggle };
+  window.klepsydraSettings = { open, close, toggle };
 }

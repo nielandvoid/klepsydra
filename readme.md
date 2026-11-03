@@ -1,6 +1,6 @@
-// προθεσμία / prothesmia 
+// κλεψύδρα / klepsydra (formerly prothesmia)
 
-![visual](prothesmia.png)
+![visual](klepsydra.png)
 
 it's a simple pomodoro timer. rather clean relative to ones usually available, and heavy on customsations. there's no specific framework or backend, just plain html/css/js, and all your cusotm configs stay in your browser's localstorage.
 
