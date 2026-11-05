@@ -240,27 +240,62 @@
   buildTabs();
   renderStatic();
 
-  if (!localStorage.getItem("klepsydra:visited")) {
+  function showOverlay(html, onClose) {
     const overlay = document.createElement("div");
     overlay.className = "onload-overlay";
-    overlay.innerHTML = `
-      <div class="onload-modal">
-        <div style="color: var(--fg);">// klepsydra</div>
-        <br>
-        <div>&gt; site data is stored in your browser's localStorage</div>
-        <div>&gt; notes widget <em>does</em> support basic markdown</div>
-        <div>&gt; video dominates image for background media; everything else in settings</div>
-        <div>&gt; <a href="https://github.com/nielandvoid/klepsydra" target="_blank" rel="noopener noreferrer">https://github.com/nielandvoid/klepsydra</a> // PRs welcome</div>
-        <button class="onload-close" type="button">[ close ]</button>
-      </div>
-    `;
+    overlay.innerHTML = `<div class="onload-modal">${html}<button class="onload-close" type="button">[ close ]</button></div>`;
     document.body.appendChild(overlay);
 
     overlay.querySelector(".onload-close").addEventListener("click", () => {
-      localStorage.setItem("klepsydra:visited", "true");
       overlay.remove();
+      onClose?.();
     });
   }
+
+  const CHANGELOG = `
+    <div style="color: var(--fg);">// changelog</div>
+    <br>
+    <div style="color: var(--fg);">2026/11/05</div>
+    <div>&gt; <a href="https://prothesmia.xyz" target="_blank" rel="noopener noreferrer">prothesmia.xyz</a> now hosts the discord bot's site. pomodoro's here at klepsydra.xyz</div>
+    <br>
+    <div style="color: var(--fg);">2026/11/03</div>
+    <div>&gt; renamed: prothesmia (προθεσμία) --&gt; klepsydra (κλεψύδρα) / <code>/klepˈsiðra/</code> / literally: water-clock</div>
+    <div>&gt; migrated to klepsydra.xyz</div>
+    <div>&gt; gh repo: <a href="https://github.com/nielandvoid/klepsydra" target="_blank" rel="noopener noreferrer">nielandvoid/klepsydra</a></div>
+    <div>&gt; "prothesmia" is now a discord bot, mainly for countdown embeds and stuff.</div>
+    <div>&gt; prothesmia gh repo: <a href="https://github.com/nielandvoid/prothesmia" target="_blank" rel="noopener noreferrer">nielandvoid/prothesmia</a></div>
+    <div>prothesmia (προθεσμία) literally meant "deadline" and klepsydra (κλεψύδρα) means "water-clock". just found klepsydra more suitable for a pomodoro or timer webapp, and prothesmia for a countdown tool.</div>
+    <br>
+    <div style="color: var(--fg);">2026/09/21</div>
+    <div>&gt; published at prothesmia.xyz</div>
+    <br>
+    <div style="color: var(--fg);">2026/09/19</div>
+    <div>&gt; v1 / prothesmia / προθεσμία</div>
+  `;
+
+  const CHANGELOG_KEY = "klepsydra:changelog-seen";
+  const LATEST_ENTRY = "2026/11/05";
+  const markChangelogSeen = () => localStorage.setItem(CHANGELOG_KEY, LATEST_ENTRY);
+  const openChangelog = () => showOverlay(CHANGELOG, markChangelogSeen);
+
+  if (!localStorage.getItem("klepsydra:visited")) {
+    showOverlay(`
+      <div style="color: var(--fg);">// klepsydra</div>
+      <br>
+      <div>&gt; site data is stored in your browser's localStorage</div>
+      <div>&gt; notes widget <em>does</em> support basic markdown</div>
+      <div>&gt; video dominates image for background media; everything else in settings</div>
+      <div>&gt; formerly prothesmia, see the changelog in the header</div>
+      <div>&gt; <a href="https://github.com/nielandvoid/klepsydra" target="_blank" rel="noopener noreferrer">https://github.com/nielandvoid/klepsydra</a> // PRs welcome</div>
+    `, () => {
+      localStorage.setItem("klepsydra:visited", "true");
+      markChangelogSeen();
+    });
+  } else if (localStorage.getItem(CHANGELOG_KEY) !== LATEST_ENTRY) {
+    openChangelog();
+  }
+
+  document.getElementById("changelog-toggle")?.addEventListener("click", openChangelog);
 
   startBtn.addEventListener("click", toggleRunning);
   resetBtn.addEventListener("click", reset);
